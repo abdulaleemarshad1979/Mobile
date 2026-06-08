@@ -1,0 +1,2894 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberSentinel v3 — Government-Grade Mobile Forensic Scanner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css">
+  <style>
+    :root {
+      --bg: #080b0f;
+      --bg2: #0d1117;
+      --bg3: #121820;
+      --card: #111820;
+      --card2: #161f2b;
+      --border: rgba(255, 255, 255, 0.07);
+      --border2: rgba(255, 255, 255, 0.12);
+      --red: #f04040;
+      --red2: #c02020;
+      --amber: #f59e0b;
+      --green: #22c55e;
+      --blue: #3b82f6;
+      --purple: #8b5cf6;
+      --cyan: #06b6d4;
+      --text: #e2e8f0;
+      --text2: #94a3b8;
+      --muted: #4a5568;
+      --mono: 'Space Mono', monospace;
+      --head: 'Barlow Condensed', sans-serif;
+      --body: 'Inter', sans-serif
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    /* NAV */
+    #navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 40px;
+      background: rgba(8, 11, 15, 0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border)
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--head);
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: .05em
+    }
+
+    .nav-logo-mark {
+      width: 32px;
+      height: 32px;
+      background: var(--red);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: all .2s
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06)
+    }
+
+    .nav-cta {
+      background: var(--red) !important;
+      color: #fff !important;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      padding: 7px 16px !important;
+      border-radius: 6px !important
+    }
+
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--green)
+    }
+
+    .nav-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: blink 2s infinite
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .3
+      }
+    }
+
+    .nav-mobile-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 22px;
+      cursor: pointer
+    }
+
+    /* HERO */
+    #home {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 100px 40px 60px;
+      overflow: hidden
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(240, 64, 64, .025) 1px, transparent 1px), linear-gradient(90deg, rgba(240, 64, 64, .025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 0
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: 15%;
+      left: 25%;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(240, 64, 64, .07), transparent 70%);
+      pointer-events: none;
+      z-index: 0
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(240, 64, 64, .1);
+      border: 1px solid rgba(240, 64, 64, .2);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--red);
+      margin-bottom: 20px;
+      font-family: var(--mono)
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--red);
+      animation: blink 1.5s infinite
+    }
+
+    .hero-h1 {
+      font-family: var(--head);
+      font-size: 72px;
+      font-weight: 800;
+      line-height: .95;
+      text-transform: uppercase;
+      margin-bottom: 24px
+    }
+
+    .hero-h1 .acc {
+      display: block;
+      color: var(--red)
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      color: var(--text2);
+      line-height: 1.7;
+      margin-bottom: 32px;
+      max-width: 460px
+    }
+
+    .hero-sub strong {
+      color: var(--text)
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 40px;
+      flex-wrap: wrap
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all .2s;
+      font-family: var(--body)
+    }
+
+    .btn-red {
+      background: var(--red);
+      color: #fff
+    }
+
+    .btn-red:hover {
+      background: var(--red2);
+      transform: translateY(-1px)
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border2)
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, .06)
+    }
+
+    .btn-sm {
+      padding: 8px 16px;
+      font-size: 13px
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap
+    }
+
+    .hs-num {
+      font-family: var(--head);
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--text)
+    }
+
+    .hs-acc {
+      color: var(--red)
+    }
+
+    .hs-label {
+      font-size: 12px;
+      color: var(--text2);
+      font-family: var(--mono);
+      margin-top: 2px
+    }
+
+    /* Scanner Preview */
+    .sp-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, .4), 0 0 0 1px rgba(240, 64, 64, .08)
+    }
+
+    .sp-bar {
+      background: var(--bg2);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .sp-dots {
+      display: flex;
+      gap: 5px
+    }
+
+    .sp-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%
+    }
+
+    .sp-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text2);
+      flex: 1;
+      text-align: center
+    }
+
+    .sp-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px
+    }
+
+    .sp-device {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px
+    }
+
+    .sp-dname {
+      font-size: 13px;
+      font-weight: 600
+    }
+
+    .sp-dmodel {
+      font-size: 11px;
+      color: var(--text2);
+      font-family: var(--mono)
+    }
+
+    .sp-scanning {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--amber);
+      font-weight: 700
+    }
+
+    .sp-sdot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--amber);
+      animation: blink .8s infinite
+    }
+
+    .sp-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 6px
+    }
+
+    .sp-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .sp-bar-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text2);
+      width: 120px;
+      flex-shrink: 0
+    }
+
+    .sp-track {
+      flex: 1;
+      height: 4px;
+      background: rgba(255, 255, 255, .08);
+      border-radius: 2px;
+      overflow: hidden
+    }
+
+    .sp-fill {
+      height: 100%;
+      border-radius: 2px;
+      animation: fill-in 2.5s ease-out both
+    }
+
+    .sp-fill.r {
+      background: var(--red)
+    }
+
+    .sp-fill.a {
+      background: var(--amber)
+    }
+
+    .sp-fill.g {
+      background: var(--green)
+    }
+
+    .sp-fill.b {
+      background: var(--blue)
+    }
+
+    @keyframes fill-in {
+      from {
+        width: 0
+      }
+
+      to {
+        width: var(--w)
+      }
+    }
+
+    .sp-threat {
+      background: rgba(240, 64, 64, .08);
+      border: 1px solid rgba(240, 64, 64, .2);
+      border-radius: 6px;
+      padding: 10px 12px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start
+    }
+
+    .sp-threat-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--red);
+      font-family: var(--mono)
+    }
+
+    .sp-threat-desc {
+      font-size: 10px;
+      color: var(--text2);
+      margin-top: 2px;
+      font-family: var(--mono)
+    }
+
+    .sp-log {
+      font-family: var(--mono);
+      font-size: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px
+    }
+
+    .sp-lline {
+      display: flex;
+      gap: 8px
+    }
+
+    .t-muted {
+      color: var(--muted)
+    }
+
+    .t-blue {
+      color: var(--blue)
+    }
+
+    .t-amber {
+      color: var(--amber)
+    }
+
+    .t-red {
+      color: var(--red)
+    }
+
+    /* INCIDENT */
+    .incident-card {
+      background: linear-gradient(135deg, rgba(240, 64, 64, .1), rgba(240, 64, 64, .03));
+      border: 1px solid rgba(240, 64, 64, .2);
+      border-radius: 12px;
+      padding: 24px 32px;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px
+    }
+
+    .incident-icon {
+      font-size: 28px;
+      flex-shrink: 0
+    }
+
+    .inc-tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--red);
+      font-weight: 700;
+      background: rgba(240, 64, 64, .1);
+      padding: 2px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 6px
+    }
+
+    .inc-title {
+      font-family: var(--head);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px
+    }
+
+    .inc-desc {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.6
+    }
+
+    .inc-meta {
+      margin-left: auto;
+      text-align: right;
+      flex-shrink: 0
+    }
+
+    .inc-num {
+      font-family: var(--head);
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--red);
+      line-height: 1
+    }
+
+    .inc-label {
+      font-size: 11px;
+      color: var(--text2)
+    }
+
+    /* SECTIONS */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 80px 40px
+    }
+
+    .sec-inner {
+      max-width: 1200px;
+      margin: 0 auto
+    }
+
+    .sec-tag {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--red);
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 12px
+    }
+
+    .sec-h2 {
+      font-family: var(--head);
+      font-size: 52px;
+      font-weight: 800;
+      line-height: .95;
+      text-transform: uppercase;
+      margin-bottom: 16px
+    }
+
+    .sec-sub {
+      font-size: 15px;
+      color: var(--text2);
+      line-height: 1.7;
+      max-width: 600px;
+      margin-bottom: 48px
+    }
+
+    /* TIMELINE */
+    .tl-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px
+    }
+
+    .tl-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      gap: 16px
+    }
+
+    .tl-num {
+      font-family: var(--head);
+      font-size: 26px;
+      font-weight: 800;
+      min-width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .tl-num.r {
+      background: rgba(240, 64, 64, .1);
+      color: var(--red);
+      border: 1px solid rgba(240, 64, 64, .2)
+    }
+
+    .tl-num.a {
+      background: rgba(245, 158, 11, .1);
+      color: var(--amber);
+      border: 1px solid rgba(245, 158, 11, .2)
+    }
+
+    .tl-num.g {
+      background: rgba(34, 197, 94, .1);
+      color: var(--green);
+      border: 1px solid rgba(34, 197, 94, .2)
+    }
+
+    .tl-title {
+      font-weight: 700;
+      margin-bottom: 6px
+    }
+
+    .tl-desc {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.6
+    }
+
+    /* SCANNER APP */
+    #scanner {
+      background: var(--bg2)
+    }
+
+    .scan-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 24px;
+      align-items: start
+    }
+
+    .scan-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px
+    }
+
+    .scan-title {
+      font-family: var(--head);
+      font-size: 28px;
+      font-weight: 800;
+      text-transform: uppercase
+    }
+
+    .scan-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    .scan-controls select {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: var(--mono);
+      outline: none;
+      cursor: pointer
+    }
+
+    .bk-badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid;
+      font-weight: 700
+    }
+
+    /* Connect zone */
+    .cz {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .3s;
+      margin-bottom: 20px
+    }
+
+    .cz:hover {
+      border-color: var(--red);
+      background: rgba(240, 64, 64, .02)
+    }
+
+    .cz.active {
+      border-color: var(--amber);
+      animation: zpulse 2s infinite
+    }
+
+    .cz.threat-state {
+      border-color: var(--red);
+      background: rgba(240, 64, 64, .05);
+      animation: none
+    }
+
+    .cz.clean-state {
+      border-color: var(--green);
+      background: rgba(34, 197, 94, .03);
+      animation: none
+    }
+
+    @keyframes zpulse {
+
+      0%,
+      100% {
+        border-color: var(--amber)
+      }
+
+      50% {
+        border-color: rgba(245, 158, 11, .3)
+      }
+    }
+
+    #usb-icon {
+      font-size: 40px;
+      margin-bottom: 12px
+    }
+
+    #zone-title {
+      font-family: var(--head);
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px
+    }
+
+    #zone-sub {
+      font-size: 13px;
+      color: var(--text2)
+    }
+
+    #scan-phase {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--amber);
+      margin-top: 10px;
+      min-height: 16px
+    }
+
+    .prog-wrap {
+      margin-top: 16px;
+      display: none
+    }
+
+    .prog-track {
+      height: 4px;
+      background: rgba(255, 255, 255, .06);
+      border-radius: 2px;
+      overflow: hidden
+    }
+
+    .prog-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 2px;
+      transition: width .3s
+    }
+
+    .prog-fill.scanning {
+      background: linear-gradient(90deg, var(--amber), var(--red));
+      animation: shimmer 1.5s infinite
+    }
+
+    .prog-fill.threat {
+      background: var(--red)
+    }
+
+    .prog-fill.clean {
+      background: var(--green)
+    }
+
+    @keyframes shimmer {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .7
+      }
+    }
+
+    /* Metrics */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px
+    }
+
+    .mc {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      transition: all .3s
+    }
+
+    .mc.red-a {
+      border-color: rgba(240, 64, 64, .3);
+      background: rgba(240, 64, 64, .05)
+    }
+
+    .mc.green-a {
+      border-color: rgba(34, 197, 94, .3);
+      background: rgba(34, 197, 94, .03)
+    }
+
+    .mc.amber-a {
+      border-color: rgba(245, 158, 11, .3);
+      background: rgba(245, 158, 11, .03)
+    }
+
+    .mc-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 4px
+    }
+
+    .mc-val {
+      font-family: var(--head);
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--text)
+    }
+
+    .mc-val.red {
+      color: var(--red)
+    }
+
+    .mc-val.green {
+      color: var(--green)
+    }
+
+    .mc-val.amber {
+      color: var(--amber)
+    }
+
+    .mc-sub {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 2px
+    }
+
+    /* Terminal */
+    .term-wrap {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden
+    }
+
+    .term-bar {
+      background: var(--card);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .t-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%
+    }
+
+    .term-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text2);
+      flex: 1
+    }
+
+    #terminal {
+      height: 240px;
+      overflow-y: auto;
+      padding: 12px;
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.7;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, .1) transparent
+    }
+
+    .log-line {
+      display: flex;
+      gap: 10px;
+      align-items: baseline
+    }
+
+    .lt {
+      color: var(--muted);
+      flex-shrink: 0;
+      min-width: 64px
+    }
+
+    .lg {
+      flex-shrink: 0;
+      min-width: 52px;
+      font-weight: 700
+    }
+
+    .lg.info {
+      color: var(--blue)
+    }
+
+    .lg.warn {
+      color: var(--amber)
+    }
+
+    .lg.danger {
+      color: var(--red)
+    }
+
+    .lg.ok {
+      color: var(--green)
+    }
+
+    .lm {
+      flex: 1;
+      color: var(--text2)
+    }
+
+    .lm.threat-msg {
+      color: var(--red);
+      font-weight: 700
+    }
+
+    .lm.ok-msg {
+      color: var(--green)
+    }
+
+    /* Alert */
+    .alert-bar {
+      display: none;
+      margin-top: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid;
+      align-items: center;
+      gap: 8px
+    }
+
+    .alert-bar.danger {
+      background: rgba(240, 64, 64, .08);
+      border-color: rgba(240, 64, 64, .25);
+      color: var(--red)
+    }
+
+    .alert-bar.success {
+      background: rgba(34, 197, 94, .06);
+      border-color: rgba(34, 197, 94, .2);
+      color: var(--green)
+    }
+
+    /* Findings */
+    #findings-section {
+      display: none;
+      margin-top: 16px
+    }
+
+    .findings-hdr {
+      font-family: var(--head);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .finding {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      display: flex;
+      gap: 12px;
+      margin-bottom: 8px
+    }
+
+    .finding.crit {
+      border-left: 3px solid var(--red)
+    }
+
+    .finding.high {
+      border-left: 3px solid var(--amber)
+    }
+
+    .finding.med {
+      border-left: 3px solid var(--blue)
+    }
+
+    .finding.low {
+      border-left: 3px solid var(--muted)
+    }
+
+    .finding-ic {
+      font-size: 18px;
+      flex-shrink: 0;
+      margin-top: 1px
+    }
+
+    .fbadge {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-right: 6px;
+      display: inline-block
+    }
+
+    .fbadge.crit {
+      background: rgba(240, 64, 64, .15);
+      color: var(--red);
+      border: 1px solid rgba(240, 64, 64, .3)
+    }
+
+    .fbadge.high {
+      background: rgba(245, 158, 11, .15);
+      color: var(--amber);
+      border: 1px solid rgba(245, 158, 11, .3)
+    }
+
+    .fbadge.med {
+      background: rgba(59, 130, 246, .15);
+      color: var(--blue);
+      border: 1px solid rgba(59, 130, 246, .3)
+    }
+
+    .fbadge.low {
+      background: rgba(100, 116, 139, .15);
+      color: var(--text2);
+      border: 1px solid var(--border)
+    }
+
+    .finding-title {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px
+    }
+
+    .finding-desc {
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.5
+    }
+
+    .finding-meta {
+      display: flex;
+      gap: 12px;
+      margin-top: 6px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted)
+    }
+
+    /* AI Panel */
+    #ai-panel {
+      display: none;
+      margin-top: 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden
+    }
+
+    .ai-hdr {
+      padding: 12px 16px;
+      background: var(--card2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--head);
+      font-size: 15px;
+      font-weight: 700
+    }
+
+    .ai-body {
+      padding: 16px
+    }
+
+    .ai-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      border: 1px solid
+    }
+
+    .ai-badge.critical {
+      background: rgba(240, 64, 64, .1);
+      color: var(--red);
+      border-color: rgba(240, 64, 64, .3)
+    }
+
+    .ai-badge.clean {
+      background: rgba(34, 197, 94, .08);
+      color: var(--green);
+      border-color: rgba(34, 197, 94, .2)
+    }
+
+    /* Chat */
+    #chat-panel {
+      display: none;
+      margin-top: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden
+    }
+
+    .chat-hdr {
+      padding: 10px 16px;
+      background: var(--card2);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--head);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    #chat-msgs {
+      height: 180px;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, .08) transparent
+    }
+
+    .chat-msg {
+      max-width: 85%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.5
+    }
+
+    .chat-msg.ai {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      align-self: flex-start
+    }
+
+    .chat-msg.user {
+      background: rgba(240, 64, 64, .1);
+      border: 1px solid rgba(240, 64, 64, .2);
+      color: var(--text);
+      align-self: flex-end;
+      text-align: right
+    }
+
+    .chat-msg.thinking {
+      background: var(--card2);
+      color: var(--muted);
+      font-style: italic;
+      align-self: flex-start;
+      animation: thinkblink 1s infinite
+    }
+
+    @keyframes thinkblink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .5
+      }
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 8px;
+      padding: 10px 12px;
+      border-top: 1px solid var(--border)
+    }
+
+    #chat-input {
+      flex: 1;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: var(--body);
+      outline: none;
+      resize: none;
+      max-height: 80px
+    }
+
+    #chat-input:focus {
+      border-color: rgba(240, 64, 64, .4)
+    }
+
+    /* RIGHT SIDEBAR */
+    .scan-right {
+      display: flex;
+      flex-direction: column;
+      gap: 16px
+    }
+
+    .side-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden
+    }
+
+    .side-hdr {
+      padding: 10px 14px;
+      background: var(--card2);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--head);
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .side-body {
+      padding: 14px
+    }
+
+    .d-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, .04)
+    }
+
+    .d-row:last-child {
+      border-bottom: none
+    }
+
+    .d-key {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: var(--mono)
+    }
+
+    .d-val {
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--mono);
+      max-width: 180px;
+      text-align: right;
+      word-break: break-all
+    }
+
+    .d-val.red {
+      color: var(--red)
+    }
+
+    .d-val.green {
+      color: var(--green)
+    }
+
+    .d-val.amber {
+      color: var(--amber)
+    }
+
+    .cfg-status {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      text-align: center;
+      border: 1px solid;
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .cfg-status.ok {
+      background: rgba(34, 197, 94, .08);
+      color: var(--green);
+      border-color: rgba(34, 197, 94, .2)
+    }
+
+    .cfg-status.warn {
+      background: rgba(245, 158, 11, .08);
+      color: var(--amber);
+      border-color: rgba(245, 158, 11, .2)
+    }
+
+    .cfg-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px
+    }
+
+    .cfg-row input {
+      flex: 1;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-family: var(--mono);
+      outline: none
+    }
+
+    .cfg-row input:focus {
+      border-color: rgba(240, 64, 64, .4)
+    }
+
+    .exp-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px
+    }
+
+    /* HOW */
+    #how {
+      border-top: 1px solid var(--border)
+    }
+
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px
+    }
+
+    .how-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px
+    }
+
+    .how-num {
+      font-family: var(--head);
+      font-size: 48px;
+      font-weight: 800;
+      color: rgba(240, 64, 64, .15);
+      line-height: 1;
+      margin-bottom: 12px
+    }
+
+    .how-title {
+      font-family: var(--head);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px
+    }
+
+    .how-desc {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.6
+    }
+
+    /* THREATS */
+    #threats {
+      background: var(--bg2)
+    }
+
+    .threats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px
+    }
+
+    .tc {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center
+    }
+
+    .tc-icon {
+      font-size: 24px;
+      margin-bottom: 8px
+    }
+
+    .tc-count {
+      font-family: var(--head);
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--red)
+    }
+
+    .tc-label {
+      font-size: 12px;
+      color: var(--text2);
+      margin-top: 4px;
+      font-family: var(--mono)
+    }
+
+    .tc-src {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 2px
+    }
+
+    /* STATS BAND */
+    #stats-band {
+      position: relative;
+      z-index: 1;
+      padding: 40px;
+      background: linear-gradient(135deg, rgba(240, 64, 64, .08), rgba(139, 92, 246, .04));
+      border-top: 1px solid rgba(240, 64, 64, .1);
+      border-bottom: 1px solid rgba(240, 64, 64, .1)
+    }
+
+    .stats-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px
+    }
+
+    .stat-item {
+      text-align: center
+    }
+
+    .stat-num {
+      font-family: var(--head);
+      font-size: 52px;
+      font-weight: 800;
+      line-height: 1
+    }
+
+    .stat-acc {
+      color: var(--red)
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text2);
+      font-family: var(--mono)
+    }
+
+    /* ARCH */
+    #architecture {
+      border-top: 1px solid var(--border)
+    }
+
+    .arch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px
+    }
+
+    .arch-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 4px
+    }
+
+    .arch-node {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .arch-node.r {
+      border-left: 3px solid var(--red)
+    }
+
+    .arch-node.a {
+      border-left: 3px solid var(--amber)
+    }
+
+    .arch-node.g {
+      border-left: 3px solid var(--green)
+    }
+
+    .arch-node.b {
+      border-left: 3px solid var(--blue)
+    }
+
+    .arch-arrow {
+      text-align: center;
+      color: var(--muted);
+      font-size: 16px;
+      padding: 2px 0
+    }
+
+    .arch-lbl {
+      font-weight: 600;
+      font-size: 13px
+    }
+
+    .arch-sub {
+      font-size: 11px;
+      color: var(--text2);
+      font-family: var(--mono)
+    }
+
+    .arch-tag {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, .06);
+      color: var(--text2)
+    }
+
+    .arch-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .arch-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px
+    }
+
+    .arch-item-title {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 4px
+    }
+
+    .arch-item-desc {
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.5
+    }
+
+    /* CONTACT */
+    #contact {
+      border-top: 1px solid var(--border)
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px
+    }
+
+    .cf {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px
+    }
+
+    .fg {
+      margin-bottom: 16px
+    }
+
+    .fl {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 6px;
+      display: block;
+      font-family: var(--mono)
+    }
+
+    .fi {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: var(--body);
+      outline: none;
+      transition: border-color .2s
+    }
+
+    .fi:focus {
+      border-color: rgba(240, 64, 64, .4)
+    }
+
+    textarea.fi {
+      resize: vertical;
+      min-height: 100px
+    }
+
+    .ci-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 24px
+    }
+
+    .ci-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px
+    }
+
+    .ci-icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(240, 64, 64, .1);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--red);
+      font-size: 14px;
+      flex-shrink: 0
+    }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 32px 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--head);
+      font-size: 16px;
+      font-weight: 700
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px
+    }
+
+    .footer-links a {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .footer-links a:hover {
+      color: var(--text)
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: var(--mono)
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, .1);
+      border-radius: 2px
+    }
+
+    /* MOBILE */
+    #mobile-nav {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 11, 15, .97);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px
+    }
+
+    #mobile-nav a {
+      font-family: var(--head);
+      font-size: 28px;
+      font-weight: 700
+    }
+
+    @media(max-width:1024px) {
+      .scan-layout {
+        grid-template-columns: 1fr
+      }
+
+      .scan-right {
+        display: grid;
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    @media(max-width:768px) {
+      #navbar {
+        padding: 12px 20px
+      }
+
+      .nav-links {
+        display: none
+      }
+
+      .nav-mobile-btn {
+        display: block
+      }
+
+      #home {
+        padding: 80px 20px 40px
+      }
+
+      .hero-inner {
+        grid-template-columns: 1fr
+      }
+
+      .hero-h1 {
+        font-size: 48px
+      }
+
+      .hero-visual {
+        display: none
+      }
+
+      section {
+        padding: 60px 20px
+      }
+
+      .sec-h2 {
+        font-size: 36px
+      }
+
+      .tl-grid,
+      .how-grid,
+      .threats-grid,
+      .arch-grid,
+      .contact-grid {
+        grid-template-columns: 1fr
+      }
+
+      .metrics-grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      footer {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px 20px
+      }
+
+      .scan-right {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- MOBILE NAV -->
+  <div id="mobile-nav">
+    <a href="#home" onclick="toggleMobileNav()">Home</a>
+    <a href="#scanner" onclick="toggleMobileNav()">Scanner</a>
+    <a href="#how" onclick="toggleMobileNav()">How It Works</a>
+    <a href="#architecture" onclick="toggleMobileNav()">Architecture</a>
+    <a href="#contact" onclick="toggleMobileNav()">Contact</a>
+    <a href="#" onclick="toggleMobileNav()" style="color:var(--muted);font-size:18px">✕ Close</a>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <a class="nav-logo" href="#home">
+      <div class="nav-logo-mark"><i class="ti ti-shield-lock"></i></div>CyberSentinel
+    </a>
+    <div class="nav-links">
+      <a href="#scanner">Scanner</a>
+      <a href="#casestudy">Case Study</a>
+      <a href="#how">How It Works</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#contact" class="nav-cta">Get Access</a>
+    </div>
+    <div class="nav-status">
+      <div class="nav-dot"></div>SYSTEM ACTIVE
+    </div>
+    <button class="nav-mobile-btn" onclick="toggleMobileNav()"><i class="ti ti-menu-2"></i></button>
+  </nav>
+
+  <!-- HERO -->
+  <section id="home">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-inner">
+      <div>
+        <div class="hero-badge"><span class="hero-badge-dot"></span>Government-Grade Forensic Pre-Screening</div>
+        <h1 class="hero-h1">STOP THE<span class="acc">THREAT</span>BEFORE IT SPREADS</h1>
+        <p class="hero-sub">AI-powered mobile device scanning that detects <strong>BadUSB implants, malware, C2 beacons,
+            and firmware tampering</strong> before any evidence device touches a forensic workstation.</p>
+        <div class="hero-btns">
+          <a href="#scanner" class="btn btn-red"><i class="ti ti-player-play"></i>Live Demo</a>
+          <a href="#casestudy" class="btn btn-ghost"><i class="ti ti-file-description"></i>Case Study</a>
+        </div>
+        <div class="hero-stats">
+          <div>
+            <div class="hs-num">8<span class="hs-acc">s</span></div>
+            <div class="hs-label">Avg scan time</div>
+          </div>
+          <div>
+            <div class="hs-num">99<span class="hs-acc">%</span></div>
+            <div class="hs-label">Detection rate</div>
+          </div>
+          <div>
+            <div class="hs-num">137<span class="hs-acc">+</span></div>
+            <div class="hs-label">Known IOCs</div>
+          </div>
+          <div>
+            <div class="hs-num">0</div>
+            <div class="hs-label">Host system risk</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="sp-wrap">
+          <div class="sp-bar">
+            <div class="sp-dots">
+              <div class="sp-dot" style="background:#ff5f57"></div>
+              <div class="sp-dot" style="background:#ffbd2e"></div>
+              <div class="sp-dot" style="background:#28c840"></div>
+            </div>
+            <div class="sp-title">CyberSentinel v3 — Active Scan</div>
+          </div>
+          <div class="sp-body">
+            <div class="sp-device">
+              <span style="font-size:22px"><i class="ti ti-device-mobile"></i></span>
+              <div>
+                <div class="sp-dname">Evidence Device #EV-2024-0047</div>
+                <div class="sp-dmodel">OnePlus 9 Pro · USB 3.0 · ADB</div>
+              </div>
+              <div class="sp-scanning">
+                <div class="sp-sdot"></div>SCANNING
+              </div>
+            </div>
+            <div class="sp-bars">
+              <div class="sp-bar-row"><span class="sp-bar-label">Firmware Integrity</span>
+                <div class="sp-track">
+                  <div class="sp-fill r" style="--w:100%"></div>
+                </div>
+              </div>
+              <div class="sp-bar-row"><span class="sp-bar-label">IOC Signatures</span>
+                <div class="sp-track">
+                  <div class="sp-fill a" style="--w:85%"></div>
+                </div>
+              </div>
+              <div class="sp-bar-row"><span class="sp-bar-label">Network Beacons</span>
+                <div class="sp-track">
+                  <div class="sp-fill g" style="--w:72%"></div>
+                </div>
+              </div>
+              <div class="sp-bar-row"><span class="sp-bar-label">Heuristic Engine</span>
+                <div class="sp-track">
+                  <div class="sp-fill b" style="--w:60%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="sp-threat">
+              <span style="font-size:16px;margin-top:1px"><i class="ti ti-bug"></i></span>
+              <div>
+                <div class="sp-threat-title">⚠ TheTruthSpy Stalkerware detected</div>
+                <div class="sp-threat-desc">com.thetruth — CRITICAL · Beaconing to 69.64.74.239:4444 · STALK-TTS-009
+                </div>
+              </div>
+            </div>
+            <div class="sp-log">
+              <div class="sp-lline"><span class="t-muted">09:14:02</span><span class="t-blue">[SYS]</span><span>Sandbox
+                  VM initialized</span></div>
+              <div class="sp-lline"><span class="t-muted">09:14:04</span><span
+                  class="t-amber">[WARN]</span><span>HID+Storage dual enumeration</span></div>
+              <div class="sp-lline"><span class="t-muted">09:14:06</span><span class="t-red">[CRIT]</span><span
+                  class="t-red">BadUSB pattern confirmed</span></div>
+              <div class="sp-lline"><span class="t-muted">09:14:08</span><span class="t-red">[MAL]</span><span
+                  class="t-red">TheTruthSpy — STALK-TTS-009</span></div>
+              <div class="sp-lline"><span class="t-muted">09:14:10</span><span class="t-red">[C2]</span><span
+                  class="t-red">Beacon → 69.64.74.239:4444</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INCIDENT -->
+  <div style="padding:0 40px;position:relative;z-index:1">
+    <div style="max-width:1200px;margin:0 auto">
+      <div class="incident-card">
+        <div class="incident-icon">⚠️</div>
+        <div>
+          <div class="inc-tag">Real Incident · Government Cybercell</div>
+          <div class="inc-title">Operation Phantom USB — Andhra Pradesh Region, 2023</div>
+          <div class="inc-desc">A seized evidence mobile with BadUSB firmware was directly connected to a forensic
+            workstation. Malware auto-executed in 8 seconds, laterally propagated via SMB, and encrypted forensic data
+            across 3 government systems.</div>
+        </div>
+        <div class="inc-meta">
+          <div class="inc-num">3</div>
+          <div class="inc-label">Workstations damaged</div>
+          <div class="inc-num" style="margin-top:12px">4hrs</div>
+          <div class="inc-label">Until ransomware activated</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CASE STUDY -->
+  <section id="casestudy">
+    <div class="sec-inner">
+      <div class="sec-tag">Incident Analysis</div>
+      <h2 class="sec-h2">HOW THE <span style="color:var(--red)">ATTACK UNFOLDED</span></h2>
+      <p class="sec-sub">A step-by-step breakdown of how a single unscanned evidence device brought down a government
+        cybercell's forensic infrastructure.</p>
+      <div class="tl-grid">
+        <div class="tl-item">
+          <div class="tl-num r">01</div>
+          <div>
+            <div class="tl-title">Evidence Device Seized</div>
+            <div class="tl-desc">Confiscated OnePlus device with compromised firmware — attacker pre-infected device
+              before planting it as evidence.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-num a">02</div>
+          <div>
+            <div class="tl-title">Direct Connection Made</div>
+            <div class="tl-desc">Investigator plugged device directly into forensic workstation via USB without
+              pre-screening. Standard ADB session opened.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-num r">03</div>
+          <div>
+            <div class="tl-title">Auto-Execution (8s)</div>
+            <div class="tl-desc">BadUSB HID payload spoofed keyboard, injected PowerShell commands, downloaded
+              second-stage ransomware dropper.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-num r">04</div>
+          <div>
+            <div class="tl-title">Lateral Movement</div>
+            <div class="tl-desc">SMB/EternalBlue variant propagated to 2 adjacent forensic workstations on the same LAN
+              within 4 minutes.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-num r">05</div>
+          <div>
+            <div class="tl-title">Data Encrypted (4h)</div>
+            <div class="tl-desc">Ransomware.Shadow.B activated after dormancy period, encrypting all forensic case data
+              and system files.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-num g">06</div>
+          <div>
+            <div class="tl-title">CyberSentinel Prevention</div>
+            <div class="tl-desc">CyberSentinel would have flagged the BadUSB HID descriptor and TheTruthSpy firmware
+              signature before any connection was made.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCANNER APP -->
+  <section id="scanner">
+    <div class="sec-inner">
+      <div class="scan-header">
+        <div>
+          <div class="sec-tag" style="margin-bottom:4px">Live Scanner</div>
+          <div class="scan-title"><i class="ti ti-scan" style="color:var(--red)"></i> Forensic Device Scanner v3</div>
+        </div>
+        <div class="scan-controls">
+          <select id="scenario-sel" onchange="onDeviceSelected()">
+            <option value="" disabled selected>No device connected</option>
+          </select>
+          <span id="device-hint" style="font-family:var(--mono);font-size:10px;color:var(--muted)">Plug in Android
+            device via USB</span>
+          <span id="bk-badge" class="bk-badge"
+            style="background:rgba(245,158,11,.1);color:var(--amber);border-color:rgba(245,158,11,.3)">⚡
+            Connecting...</span>
+          <button class="btn btn-ghost btn-sm" onclick="resetScan()"><i class="ti ti-refresh"></i>Reset</button>
+        </div>
+      </div>
+      <div class="scan-layout">
+        <!-- Left -->
+        <div>
+          <div class="metrics-grid">
+            <div class="mc" id="m-files">
+              <div class="mc-label">Packages</div>
+              <div class="mc-val" id="mv-files">—</div>
+              <div class="mc-sub" id="ms-files">awaiting device</div>
+            </div>
+            <div class="mc" id="m-threats">
+              <div class="mc-label">Threats</div>
+              <div class="mc-val" id="mv-threats">—</div>
+              <div class="mc-sub" id="ms-threats">awaiting scan</div>
+            </div>
+            <div class="mc" id="m-risk">
+              <div class="mc-label">Risk Score</div>
+              <div class="mc-val" id="mv-risk">—</div>
+              <div class="mc-sub" id="ms-risk">out of 100</div>
+            </div>
+            <div class="mc" id="m-time">
+              <div class="mc-label">Scan Time</div>
+              <div class="mc-val" id="mv-time">—</div>
+              <div class="mc-sub" id="ms-time">seconds elapsed</div>
+            </div>
+          </div>
+          <div class="cz" id="connect-zone" onclick="startScan()">
+            <div id="usb-icon">🔌</div>
+            <h3 id="zone-title">Connect Evidence Device</h3>
+            <p id="zone-sub">Connect a real Android device via USB · Enable USB Debugging in Developer Options</p>
+            <div id="scan-phase"></div>
+            <div class="prog-wrap" id="prog-wrap">
+              <div class="prog-track">
+                <div class="prog-fill scanning" id="prog-fill"></div>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:center;margin-top:-8px;margin-bottom:20px">
+            <button class="btn btn-red" id="main-btn" onclick="startScan()"><i class="ti ti-plug-connected"></i>Connect
+              &amp; Scan</button>
+          </div>
+          <div id="troubleshoot-tips"
+            style="margin-top:-10px;margin-bottom:20px;padding:20px;background:rgba(245,158,11,0.06);border:1px dashed rgba(245,158,11,0.35);border-radius:10px;font-size:12px;color:var(--text2);text-align:left;display:none">
+            <strong
+              style="color:var(--amber);font-size:14px;display:flex;align-items:center;gap:6px;margin-bottom:12px"><i
+                class="ti ti-help-circle"></i> Device not detected? Enable USB Debugging on your phone:</strong>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <span
+                  style="background:rgba(245,158,11,0.15);color:var(--amber);font-family:var(--head);font-weight:800;min-width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;border:1px solid rgba(245,158,11,0.3)">1</span>
+                <div><strong style="color:var(--text)">Enable Developer Options</strong><br>Go to <code
+                    style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px;font-size:11px">Settings → About Phone (or Software Info)</code>
+                  and tap <strong style="color:var(--amber)">"Build Number" 7 times</strong> until you see "You are now
+                  a developer!"<br><span style="color:var(--muted);font-size:11px">iQOO/Vivo: Settings → About Phone →
+                    Software Information → Build Number</span></div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <span
+                  style="background:rgba(245,158,11,0.15);color:var(--amber);font-family:var(--head);font-weight:800;min-width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;border:1px solid rgba(245,158,11,0.3)">2</span>
+                <div><strong style="color:var(--text)">Turn on USB Debugging</strong><br>Go to <code
+                    style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px;font-size:11px">Settings → System → Developer Options</code>
+                  and toggle <strong style="color:var(--amber)">"USB Debugging" ON</strong>.<br><span
+                    style="color:var(--muted);font-size:11px">iQOO/Vivo: Settings → System & Updates → Developer Options
+                    → USB Debugging</span></div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <span
+                  style="background:rgba(245,158,11,0.15);color:var(--amber);font-family:var(--head);font-weight:800;min-width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;border:1px solid rgba(245,158,11,0.3)">3</span>
+                <div><strong style="color:var(--text)">Set USB Mode to File Transfer</strong><br>After plugging in,
+                  swipe down the notification bar on your phone. Tap the USB notification and select <strong
+                    style="color:var(--amber)">"File Transfer (MTP)"</strong> instead of "Charging only".</div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <span
+                  style="background:rgba(245,158,11,0.15);color:var(--amber);font-family:var(--head);font-weight:800;min-width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;border:1px solid rgba(245,158,11,0.3)">4</span>
+                <div><strong style="color:var(--text)">Authorize this Computer</strong><br>A popup will appear on your
+                  phone: <strong style="color:var(--amber)">"Allow USB debugging?"</strong> — tap <strong>Allow</strong>
+                  (check "Always allow from this computer").<br><span style="color:var(--muted);font-size:11px">If no
+                    popup appears, unplug and replug the cable, or revoke USB debugging authorizations in Developer
+                    Options and try again.</span></div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <span
+                  style="background:rgba(245,158,11,0.15);color:var(--amber);font-family:var(--head);font-weight:800;min-width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;border:1px solid rgba(245,158,11,0.3)">5</span>
+                <div><strong style="color:var(--text)">Use a Data Cable</strong><br>Some USB cables are
+                  <em>charge-only</em>. Make sure your cable supports data transfer. Try a different cable or port if
+                  the device still doesn't appear.</div>
+              </div>
+            </div>
+            <div
+              style="margin-top:12px;padding:10px;background:rgba(240,64,64,0.06);border:1px solid rgba(240,64,64,0.15);border-radius:6px;font-size:11px;color:var(--text2)">
+              <strong style="color:var(--red)"><i class="ti ti-alert-triangle"></i> Windows users:</strong> Use <code
+                style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px">start.bat</code> instead of
+              <code style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px">bash start.sh</code> for
+              proper USB device access. WSL (Linux subsystem) cannot access Windows USB devices.
+            </div>
+          </div>
+          <div class="term-wrap">
+            <div class="term-bar">
+              <div class="t-dot" style="background:#ff5f57"></div>
+              <div class="t-dot" style="background:#ffbd2e"></div>
+              <div class="t-dot" style="background:#28c840"></div>
+              <div class="term-title">CyberSentinel Terminal · ADB Bridge</div>
+            </div>
+            <div id="terminal"></div>
+          </div>
+          <div class="alert-bar" id="scanner-alert"></div>
+          <div id="findings-section">
+            <div class="findings-hdr"><i class="ti ti-bug" style="color:var(--red)"></i>Threat Findings</div>
+            <div id="findings-body"></div>
+          </div>
+          <div id="ai-panel">
+            <div class="ai-hdr"><i class="ti ti-brain" style="color:var(--purple)"></i>AI Forensic Analysis</div>
+            <div class="ai-body" id="ai-body">
+              <div style="color:var(--muted);font-family:var(--mono);font-size:12px">Awaiting scan completion...</div>
+            </div>
+          </div>
+          <div id="chat-panel">
+            <div class="chat-hdr"><i class="ti ti-message-dots" style="color:var(--cyan)"></i>Forensic AI Chat</div>
+            <div id="chat-msgs"></div>
+            <div class="chat-input-row">
+              <textarea id="chat-input" placeholder="Ask about threats, MITRE mappings, remediation steps..." rows="2"
+                onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+              <button class="btn btn-red btn-sm" id="chat-send" onclick="sendChat()"><i class="ti ti-send"></i></button>
+            </div>
+          </div>
+        </div>
+        <!-- Right sidebar -->
+        <div class="scan-right">
+          <div class="side-card">
+            <div class="side-hdr"><span><i class="ti ti-device-mobile" style="color:var(--blue)"></i> Device
+                Profile</span><span id="dev-status-badge"
+                style="font-family:var(--mono);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(100,116,139,.15);border:1px solid var(--border);color:var(--muted)">No
+                device</span></div>
+            <div class="side-body" id="device-body">
+              <div style="text-align:center;padding:20px 0;color:var(--muted);font-family:var(--mono);font-size:12px">No
+                device connected</div>
+            </div>
+          </div>
+          <!-- Groq AI Config moved to backend .env — not exposed in UI -->
+          <div class="side-card">
+            <div class="side-hdr"><i class="ti ti-download" style="color:var(--green)"></i> Export Report</div>
+            <div class="side-body">
+              <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Download last scan report</div>
+              <div class="exp-row">
+                <button class="btn btn-ghost btn-sm" onclick="exportReport('json')"><i
+                    class="ti ti-code"></i>JSON</button>
+                <button class="btn btn-ghost btn-sm" onclick="exportReport('txt')"><i
+                    class="ti ti-file-text"></i>TXT</button>
+              </div>
+            </div>
+          </div>
+          <div class="side-card">
+            <div class="side-hdr"><i class="ti ti-database" style="color:var(--red)"></i> IOC Database v3</div>
+            <div class="side-body">
+              <div class="d-row"><span class="d-key">Malware Packages</span><span class="d-val red">137</span></div>
+              <div class="d-row"><span class="d-key">C2 IP Signatures</span><span class="d-val red">34</span></div>
+              <div class="d-row"><span class="d-key">Permission Combos</span><span class="d-val amber">10</span></div>
+              <div class="d-row"><span class="d-key">Suspicious Ports</span><span class="d-val amber">24</span></div>
+              <div class="d-row"><span class="d-key">Heuristic Rules</span><span class="d-val"
+                  style="color:var(--blue)">8</span></div>
+              <div class="d-row"><span class="d-key">MITRE ATT&CK Mapped</span><span class="d-val green">✓</span></div>
+              <div class="d-row"><span class="d-key">VirusTotal Integration</span><span class="d-val"
+                  style="color:var(--purple)">Optional</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="sec-inner">
+      <div class="sec-tag">Technical Overview</div>
+      <h2 class="sec-h2">HOW IT <span style="color:var(--red)">WORKS</span></h2>
+      <p class="sec-sub">Six scanning phases run in strict isolation — no malware can reach the forensic workstation.
+      </p>
+      <div class="how-grid">
+        <div class="how-card">
+          <div class="how-num">01</div>
+          <div class="how-title">USB Descriptor Analysis</div>
+          <div class="how-desc">Device USB class descriptors enumerated at hardware level. Dual HID + Mass Storage
+            (BadUSB pattern) flagged before any data flows.</div>
+        </div>
+        <div class="how-card">
+          <div class="how-num">02</div>
+          <div class="how-title">Firmware Integrity Check</div>
+          <div class="how-desc">ro.build.fingerprint and build signatures validated. Test-keys, dev-keys, userdebug
+            builds, and injected su binaries detected.</div>
+        </div>
+        <div class="how-card">
+          <div class="how-num">03</div>
+          <div class="how-title">Network Beacon Detection</div>
+          <div class="how-desc">Active TCP/UDP sockets inspected against 34 known C2 IPs and 24 suspicious ports.
+            Real-time C2 communication detected live.</div>
+        </div>
+        <div class="how-card">
+          <div class="how-num">04</div>
+          <div class="how-title">IOC Package Scan</div>
+          <div class="how-desc">137 malware package signatures matched: stalkerware, RATs, banking trojans, ransomware,
+            and Pegasus IOCs from CERT-IN, CAS, CitizenLab.</div>
+        </div>
+        <div class="how-card">
+          <div class="how-num">05</div>
+          <div class="how-title">Heuristic Scoring Engine</div>
+          <div class="how-desc">Unknown apps scored by permission combos, MITRE ATT&amp;CK patterns, namespace
+            masquerades, and behavioral indicators — no signature required.</div>
+        </div>
+        <div class="how-card">
+          <div class="how-num">06</div>
+          <div class="how-title">AI Forensic Analysis</div>
+          <div class="how-desc">Groq LLaMA-3.3-70B synthesizes all scan data into a forensic verdict with immediate
+            isolation actions and chain-of-custody recommendations.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section id="architecture" style="background:var(--bg2)">
+    <div class="sec-inner">
+      <div class="sec-tag">System Design</div>
+      <h2 class="sec-h2">TECHNICAL <span style="color:var(--red)">ARCHITECTURE</span></h2>
+      <p class="sec-sub">Python FastAPI backend with async ADB bridge, WebSocket streaming, heuristic scoring, and
+        optional VirusTotal integration.</p>
+      <div class="arch-grid">
+        <div>
+          <div class="sec-tag" style="margin-bottom:16px">Scanning Pipeline</div>
+          <div class="arch-flow">
+            <div class="arch-node r"><i class="ti ti-usb" style="color:var(--red)"></i>
+              <div>
+                <div class="arch-lbl">USB Descriptor Analysis</div>
+                <div class="arch-sub">BadUSB · HID · Mass Storage</div>
+              </div>
+              <div class="arch-tag">Phase 1</div>
+            </div>
+            <div class="arch-arrow">↓</div>
+            <div class="arch-node a"><i class="ti ti-circuit-board" style="color:var(--amber)"></i>
+              <div>
+                <div class="arch-lbl">Firmware Integrity</div>
+                <div class="arch-sub">test-keys · su binary · build_tags</div>
+              </div>
+              <div class="arch-tag">Phase 2</div>
+            </div>
+            <div class="arch-arrow">↓</div>
+            <div class="arch-node b"><i class="ti ti-wifi" style="color:var(--blue)"></i>
+              <div>
+                <div class="arch-lbl">Network Beacons</div>
+                <div class="arch-sub">34 C2 IPs · 24 suspicious ports</div>
+              </div>
+              <div class="arch-tag">Phase 3</div>
+            </div>
+            <div class="arch-arrow">↓</div>
+            <div class="arch-node r"><i class="ti ti-bug" style="color:var(--red)"></i>
+              <div>
+                <div class="arch-lbl">IOC + Heuristic Scan</div>
+                <div class="arch-sub">137 signatures · 8 heuristic rules</div>
+              </div>
+              <div class="arch-tag">Phase 4–5</div>
+            </div>
+            <div class="arch-arrow">↓</div>
+            <div class="arch-node g"><i class="ti ti-brain" style="color:var(--green)"></i>
+              <div>
+                <div class="arch-lbl">AI Forensic Report</div>
+                <div class="arch-sub">Groq LLaMA-3.3-70B</div>
+              </div>
+              <div class="arch-tag">Phase 6</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="sec-tag" style="margin-bottom:16px">Stack Components</div>
+          <div class="arch-list">
+            <div class="arch-item">
+              <div class="arch-item-title"><i class="ti ti-brand-python" style="color:var(--blue)"></i> FastAPI v0.110+
+                Backend</div>
+              <div class="arch-item-desc">Async Python with Pydantic v2, WebSocket streaming, lifespan hooks, structured
+                JSON logging. CORS-protected, rate-limited.</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-title"><i class="ti ti-device-mobile" style="color:var(--amber)"></i> Android Debug
+                Bridge (ADB)</div>
+              <div class="arch-item-desc">Async subprocess wrapper with per-command timeouts. Falls back to realistic
+                demo mode when ADB is unavailable.</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-title"><i class="ti ti-database" style="color:var(--red)"></i> Threat Intelligence
+                DB v3</div>
+              <div class="arch-item-desc">137 malware packages, 34 C2 IPs, 10 permission combos, 8 heuristic rules.
+                Sources: CERT-IN, CAS, CitizenLab, Threatfabric, Europol.</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-title"><i class="ti ti-virus-search" style="color:var(--purple)"></i> VirusTotal
+                Integration</div>
+              <div class="arch-item-desc">Optional APK hash lookup. Only triggered on already-flagged packages to
+                conserve API quota. Configurable via VIRUSTOTAL_API_KEY in .env.</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-title"><i class="ti ti-brain" style="color:var(--green)"></i> Groq AI Engine v3
+              </div>
+              <div class="arch-item-desc">LLaMA-3.3-70B with 3-attempt retry + exponential backoff, Pydantic-validated
+                response, context-aware forensic chat (20-message history cap).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THREAT INTEL -->
+  <section id="threats">
+    <div class="sec-inner">
+      <div class="sec-tag">Threat Coverage</div>
+      <h2 class="sec-h2">IOC <span style="color:var(--red)">DATABASE</span></h2>
+      <p class="sec-sub">Real malware signatures from authoritative sources — not samples, not guesses.</p>
+      <div class="threats-grid">
+        <div class="tc">
+          <div class="tc-icon">🎯</div>
+          <div class="tc-count">14</div>
+          <div class="tc-label">Stalkerware Families</div>
+          <div class="tc-src">CAS · AssoEchap</div>
+        </div>
+        <div class="tc">
+          <div class="tc-icon">🏦</div>
+          <div class="tc-count">22</div>
+          <div class="tc-label">Banking Trojans</div>
+          <div class="tc-src">Threatfabric · Kaspersky</div>
+        </div>
+        <div class="tc">
+          <div class="tc-icon">🕹️</div>
+          <div class="tc-count">21</div>
+          <div class="tc-label">Remote Access Trojans</div>
+          <div class="tc-src">CERT-IN · Europol</div>
+        </div>
+        <div class="tc">
+          <div class="tc-icon">🔒</div>
+          <div class="tc-count">5</div>
+          <div class="tc-label">Ransomware Families</div>
+          <div class="tc-src">ESET · Kaspersky</div>
+        </div>
+        <div class="tc">
+          <div class="tc-icon">👁️</div>
+          <div class="tc-count">4</div>
+          <div class="tc-label">Pegasus IOCs</div>
+          <div class="tc-src">CitizenLab</div>
+        </div>
+        <div class="tc">
+          <div class="tc-icon">💳</div>
+          <div class="tc-count">5</div>
+          <div class="tc-label">SMS/WAP Fraud</div>
+          <div class="tc-src">CERT-IN · Google</div>
+        </div>
+        <div class="tc">
+          <div class="tc-icon">🛜</div>
+          <div class="tc-count">34</div>
+          <div class="tc-label">C2 IP Indicators</div>
+          <div class="tc-src">abuse.ch · MalwareBazaar</div>
+        </div>
+        <div class="tc">
+          <div class="tc-icon">🔬</div>
+          <div class="tc-count">8</div>
+          <div class="tc-label">Heuristic Rules</div>
+          <div class="tc-src">MITRE ATT&CK Mobile</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BAND -->
+  <div id="stats-band">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-num">8<span class="stat-acc">s</span></div>
+        <div class="stat-label">Average scan time</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">99<span class="stat-acc">%</span></div>
+        <div class="stat-label">Known IOC detection</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">0<span class="stat-acc">%</span></div>
+        <div class="stat-label">Host system exposure</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">137<span class="stat-acc">+</span></div>
+        <div class="stat-label">Active IOC signatures</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="sec-inner">
+      <div class="sec-tag">Get Access</div>
+      <h2 class="sec-h2">REQUEST <span style="color:var(--red)">ACCESS</span></h2>
+      <div class="contact-grid">
+        <div>
+          <p class="sec-sub">CyberSentinel is available to government cybercrime units, police forensic labs, and
+            certified private forensic investigators.</p>
+          <div class="ci-list">
+            <div class="ci-item">
+              <div class="ci-icon"><i class="ti ti-shield-check"></i></div>Government cybercrime units — complimentary
+              pilot
+            </div>
+            <div class="ci-item">
+              <div class="ci-icon"><i class="ti ti-building-community"></i></div>State police forensic labs — priority
+              onboarding
+            </div>
+            <div class="ci-item">
+              <div class="ci-icon"><i class="ti ti-certificate"></i></div>Certified private forensic investigators
+            </div>
+            <div class="ci-item">
+              <div class="ci-icon"><i class="ti ti-code"></i></div>Open-source backend · enterprise support available
+            </div>
+          </div>
+        </div>
+        <div class="cf">
+          <div class="fg"><label class="fl">Full Name</label><input type="text" class="fi"
+              placeholder="Investigator name"></div>
+          <div class="fg"><label class="fl">Organization</label><input type="text" class="fi"
+              placeholder="Government department / lab"></div>
+          <div class="fg"><label class="fl">Email</label><input type="email" class="fi" placeholder="official@gov.in">
+          </div>
+          <div class="fg"><label class="fl">Use Case</label><textarea class="fi"
+              placeholder="Describe your forensic workflow..."></textarea></div>
+          <button class="btn btn-red" style="width:100%;justify-content:center"><i class="ti ti-send"></i>Submit Access
+            Request</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">
+      <div class="nav-logo-mark"><i class="ti ti-shield-lock"></i></div>CyberSentinel
+    </div>
+    <div class="footer-links"><a href="#scanner">Scanner</a><a href="#architecture">Architecture</a><a href="/docs"
+        target="_blank">API Docs</a><a href="/health" target="_blank">Health</a></div>
+    <div class="footer-copy">v3.0.0 · Built for forensic professionals · India 🇮🇳</div>
+  </footer>
+
+  <script>
+    // ── State ──────────────────────────────────────────────────────────────────
+    let ws = null, scanState = 'idle', backendOnline = false, adbAvailable = false, scanTimers = [], lastScanData = null, currentSerial = '';
+
+    function toggleMobileNav() {
+      const n = document.getElementById('mobile-nav');
+      n.style.display = n.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    // ── Backend URL Config ─────────────────────────────────────────────────────
+    // Set this to your Render backend URL after deploying.
+    // Example: const BACKEND_URL = 'https://cybersentinel-api.onrender.com';
+    const BACKEND_URL = window.CYBERSENTINEL_BACKEND_URL || '';
+
+    // ── WebSocket ──────────────────────────────────────────────────────────────
+    function connectWebSocket() {
+      let wsUrl;
+      if (BACKEND_URL) {
+        // Use configured Render backend (cross-origin)
+        const proto = BACKEND_URL.startsWith('https') ? 'wss' : 'ws';
+        const host = BACKEND_URL.replace(/^https?:\/\//, '');
+        wsUrl = `${proto}://${host}/ws`;
+      } else {
+        // Fallback: same-origin (local dev)
+        const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        wsUrl = `${proto}//${window.location.host}/ws`;
+      }
+      addLog('info', '[SYS]', 'Connecting to CyberSentinel v3 Backend...');
+      try { ws = new WebSocket(wsUrl); } catch (e) { addLog('warn', '[SYS]', 'Backend unavailable — please start the CyberSentinel server.'); return; }
+      ws.onopen = () => {
+        backendOnline = true;
+        const b = document.getElementById('bk-badge');
+        b.textContent = '🟢 Backend Connected';
+        b.style.cssText = 'background:rgba(34,197,94,.1);color:var(--green);border-color:rgba(34,197,94,.25)';
+        addLog('ok', '[SYS]', 'Connected to CyberSentinel FastAPI v3 Backend.');
+      };
+      ws.onmessage = (ev) => {
+        const d = JSON.parse(ev.data);
+        if (d.type === 'init') {
+          adbAvailable = d.adb_available;
+          addLog('info', '[ADB]', d.adb_available ? 'Android Debug Bridge ready — connect a device via USB. If device not detected, run: adb kill-server && adb start-server' : 'ADB not found — install ADB platform-tools from https://developer.android.com/tools/releases/platform-tools and restart.');
+          if (d.vt_configured) addLog('info', '[VT]', 'VirusTotal integration active.');
+        }
+        else if (d.type === 'devices_list') updateDeviceDropdown(d.devices);
+        else if (d.type === 'status') { document.getElementById('scan-phase').textContent = '> ' + d.phase; if (d.log) addLog('info', '[SYS]', d.log); }
+        else if (d.type === 'log') addLog(d.level, d.tag, d.message, d.threat, d.clean);
+        else if (d.type === 'device_info') setDeviceCard(d.data);
+        else if (d.type === 'apk_scan_progress') {
+          const prog = Math.min(100, (d.current / d.total) * 100);
+          document.getElementById('prog-fill').style.width = prog + '%';
+          setMetric('files', d.current.toLocaleString(), 'amber', 'files scanned');
+          document.getElementById('scan-phase').textContent = `> Scanning: ${d.package.substring(0, 35)}... (${d.current}/${d.total})`;
+        }
+        else if (d.type === 'scan_complete') handleScanComplete(d);
+        else if (d.type === 'chat_reply') {
+          const t = document.querySelector('.chat-msg.thinking'); if (t) t.remove();
+          const m = document.getElementById('chat-msgs');
+          m.innerHTML += `<div class="chat-msg ai">${d.message}</div>`;
+          document.getElementById('chat-send').disabled = false;
+          m.scrollTop = m.scrollHeight;
+        }
+        else if (d.type === 'chat_status' && d.status === 'thinking') {
+          const m = document.getElementById('chat-msgs');
+          m.innerHTML += `<div class="chat-msg thinking">⏳ Analysing...</div>`;
+          m.scrollTop = m.scrollHeight;
+        }
+        else if (d.type === 'config_updated') {
+          addLog(d.groq_configured ? 'ok' : 'warn', '[AI]', d.message);
+        }
+        else if (d.type === 'error') { addLog('danger', '[ERR]', d.message, true); resetScan(); }
+      };
+      ws.onclose = () => {
+        backendOnline = false;
+        const b = document.getElementById('bk-badge');
+        b.textContent = '⚡ Backend Offline';
+        b.style.cssText = 'background:rgba(239,68,68,.1);color:var(--red);border-color:rgba(239,68,68,.25)';
+        addLog('warn', '[SYS]', 'Connection lost. Reconnecting in 5s...');
+        setTimeout(connectWebSocket, 5000);
+      };
+    }
+    connectWebSocket();
+
+    function updateDeviceDropdown(devices) {
+      const sel = document.getElementById('scenario-sel');
+      while (sel.options.length) sel.remove(0);
+      // Filter out demo devices
+      const allReal = devices.filter(d => d.serial !== 'DEMO-0047' && !d.serial.startsWith('demo'));
+      const unauthorizedDevices = allReal.filter(d => d.status === 'unauthorized' || d.needs_auth);
+      const readyDevices = allReal.filter(d => d.status === 'device' || d.status === 'recovery');
+      const hint = document.getElementById('device-hint');
+
+      if (allReal.length === 0) {
+        // No devices at all
+        document.getElementById('troubleshoot-tips').style.display = 'block';
+        if (hint) hint.textContent = 'Plug in Android device via USB';
+        const opt = document.createElement('option');
+        opt.value = ''; opt.textContent = 'No device connected'; opt.disabled = true; opt.selected = true;
+        sel.appendChild(opt);
+        if (scanState === 'idle') {
+          document.getElementById('zone-title').textContent = 'Connect Evidence Device';
+          document.getElementById('zone-sub').textContent = 'Connect a real Android device via USB · Enable USB Debugging in Developer Options';
+          document.getElementById('usb-icon').textContent = '🔌';
+        }
+      } else if (readyDevices.length === 0 && unauthorizedDevices.length > 0) {
+        // Device connected but needs USB debugging authorization
+        document.getElementById('troubleshoot-tips').style.display = 'none';
+        if (hint) hint.textContent = '⚠ Tap ALLOW USB Debugging on phone';
+        const opt = document.createElement('option');
+        opt.value = ''; opt.textContent = `${unauthorizedDevices[0].serial} — TAP ALLOW on phone screen`; opt.disabled = true; opt.selected = true;
+        sel.appendChild(opt);
+        if (scanState === 'idle') {
+          document.getElementById('zone-title').textContent = '⚠ Authorization Required';
+          document.getElementById('zone-sub').textContent = 'Your phone is connected — look at the screen and tap "Allow USB Debugging" then wait 3 seconds';
+          document.getElementById('usb-icon').textContent = '⚠️';
+        }
+        addLog('warn', '[USB]', `Device ${unauthorizedDevices[0].serial} connected but needs USB Debugging authorization. Look at your phone screen and tap ALLOW.`);
+        showAlertBar('danger', '📱 Look at your phone screen → tap "Allow USB Debugging" → wait 3 seconds');
+      } else {
+        // Ready devices available
+        document.getElementById('troubleshoot-tips').style.display = 'none';
+        if (hint) hint.textContent = `${readyDevices.length} device(s) ready`;
+        readyDevices.forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d.serial;
+          opt.textContent = `${d.model || 'Android Device'} (${d.serial})`;
+          sel.appendChild(opt);
+        });
+        currentSerial = readyDevices[0].serial;
+        sel.value = currentSerial;
+        if (scanState === 'idle') {
+          document.getElementById('zone-title').textContent = 'Device Ready — Click to Scan';
+          document.getElementById('zone-sub').textContent = `✅ ${readyDevices[0].model || currentSerial} detected · Click Connect & Scan to begin`;
+          document.getElementById('usb-icon').textContent = '📱';
+        }
+        addLog('ok', '[USB]', `Device ready: ${readyDevices[0].model || readyDevices[0].serial} · Serial: ${readyDevices[0].serial}`);
+      }
+    }
+
+    function onDeviceSelected() { currentSerial = document.getElementById('scenario-sel').value; }
+
+
+
+    // ── Scan start ─────────────────────────────────────────────────────────────
+    function startScan() {
+      if (scanState !== 'idle') { if (scanState === 'done') resetScan(); return; }
+      currentSerial = document.getElementById('scenario-sel').value;
+
+      // BLOCK: no real device connected or unauthorized
+      if (!currentSerial || currentSerial === '') {
+        // Check if there's an unauthorized device
+        const selEl = document.getElementById('scenario-sel');
+        const optText = selEl.options[0] ? selEl.options[0].textContent : '';
+        if (optText.includes('ALLOW') || optText.includes('TAP')) {
+          addLog('warn', '[USB]', 'Device connected but needs USB Debugging authorization. Look at your phone and tap ALLOW.');
+          showAlertBar('danger', '📱 Tap "Allow USB Debugging" on your phone screen first!');
+        } else {
+          addLog('warn', '[USB]', 'No real device detected. Connect an Android phone via USB and enable USB Debugging.');
+          showAlertBar('danger', 'No device connected. Plug in a real Android device with USB Debugging enabled.');
+        }
+        document.getElementById('scanner-alert').style.display = 'flex';
+        return;
+      }
+
+      // BLOCK: backend not ready
+      if (!backendOnline) {
+        addLog('danger', '[SYS]', 'Backend server is offline. Start the CyberSentinel FastAPI server first.');
+        showAlertBar('danger', 'Backend offline — run: python main.py');
+        document.getElementById('scanner-alert').style.display = 'flex';
+        return;
+      }
+
+      // BLOCK: ADB not available (check from last init message stored)
+      if (!adbAvailable) {
+        addLog('danger', '[ADB]', 'ADB not found. Install Android platform-tools and add to PATH.');
+        showAlertBar('danger', 'ADB not installed — download platform-tools from developer.android.com');
+        document.getElementById('scanner-alert').style.display = 'flex';
+        return;
+      }
+
+      scanState = 'scanning';
+      const zone = document.getElementById('connect-zone'), btn = document.getElementById('main-btn');
+      const pw = document.getElementById('prog-wrap'), pf = document.getElementById('prog-fill');
+      zone.className = 'cz active';
+      document.getElementById('usb-icon').textContent = '📱';
+      document.getElementById('zone-title').textContent = 'Device Connected — Scanning...';
+      document.getElementById('zone-sub').textContent = 'Extracting system logs · Verifying firmware · Scanning packages...';
+      btn.style.display = 'none'; pw.style.display = 'block'; pf.className = 'prog-fill scanning'; pf.style.width = '0%';
+      document.getElementById('terminal').innerHTML = '';
+      document.getElementById('findings-section').style.display = 'none';
+      document.getElementById('ai-panel').style.display = 'none';
+      document.getElementById('chat-panel').style.display = 'none';
+      document.getElementById('scanner-alert').style.display = 'none';
+      document.getElementById('troubleshoot-tips').style.display = 'none';
+      addLog('info', '[SYS]', `Starting forensic analysis on real device: ${currentSerial}`);
+      ws.send(JSON.stringify({ action: 'start_scan', device_serial: currentSerial }));
+    }
+
+    function handleScanComplete(data) {
+      scanState = 'done'; lastScanData = data;
+      const { metrics, findings, ai_report } = data;
+      const isMal = metrics.threats > 0;
+      const pf = document.getElementById('prog-fill');
+      pf.className = 'prog-fill ' + (isMal ? 'threat' : 'clean'); pf.style.width = '100%';
+      const zone = document.getElementById('connect-zone');
+      zone.className = 'cz ' + (isMal ? 'threat-state' : 'clean-state');
+      document.getElementById('usb-icon').textContent = isMal ? '⛔' : '✅';
+      document.getElementById('zone-title').textContent = isMal ? '⚠ THREATS DETECTED — Device Quarantined' : '✅ Device Cleared';
+      document.getElementById('zone-sub').textContent = isMal ? 'DO NOT connect to any workstation. Isolate immediately.' : 'Safe to proceed with forensic analysis.';
+      document.getElementById('scan-phase').textContent = '';
+      const btn = document.getElementById('main-btn');
+      btn.style.display = 'inline-flex'; btn.className = 'btn ' + (isMal ? 'btn-red' : 'btn-ghost');
+      btn.innerHTML = '<i class="ti ti-refresh"></i> Reset Scanner';
+      btn.onclick = e => { e.stopPropagation(); resetScan(); };
+      const files = metrics.files_scanned ?? metrics.files ?? '?';
+      const risk = metrics.risk_score ?? metrics.risk ?? '?';
+      const time = metrics.scan_time ?? metrics.time ?? '?';
+      setMetric('files', String(files), isMal ? 'red' : 'green', 'packages audited');
+      setMetric('threats', String(metrics.threats), metrics.threats > 0 ? 'red' : 'green', 'threats detected');
+      setMetric('risk', String(risk), risk > 50 ? 'red' : 'green', 'out of 100');
+      setMetric('time', String(time), '', 'seconds total');
+      showAlertBar(isMal ? 'danger' : 'success', isMal ? `CRITICAL: ${metrics.threats} threat(s) detected. Device quarantined.` : 'All clear. Device passed firmware, network, and application checks.');
+      showFindings(findings);
+      displayAIReport(ai_report, isMal);
+    }
+
+    function displayAIReport(r, isMal) {
+      document.getElementById('ai-panel').style.display = 'block';
+      const actions = (r.immediate_actions || []).map(a => `<li>${a}</li>`).join('');
+      document.getElementById('ai-body').innerHTML = `
+    <div class="ai-badge ${isMal ? 'critical' : 'clean'}">${isMal ? '🔴 ' : '🟢 '}${r.verdict}</div>
+    <div style="margin-bottom:12px;font-size:13px;line-height:1.6"><strong>Summary:</strong> ${r.summary}</div>
+    <div style="margin-bottom:12px;font-size:12px;line-height:1.5;background:var(--card2);padding:10px;border-radius:6px;border:1px solid var(--border)"><strong style="color:#c4b5fd">Forensic Assessment:</strong> ${r.threat_breakdown}</div>
+    <div style="margin-bottom:12px;font-size:12px;color:var(--muted)"><strong>Chain of Custody:</strong> ${r.chain_of_custody}</div>
+    <div style="font-size:12px"><strong style="color:var(--red)">Immediate Actions:</strong><ul style="margin-left:16px;margin-top:4px">${actions}</ul></div>
+    <div style="text-align:right;font-size:10px;color:var(--muted);margin-top:8px;font-family:var(--mono)">Confidence: ${r.confidence}%</div>`;
+      document.getElementById('chat-panel').style.display = 'block';
+      const m = document.getElementById('chat-msgs');
+      m.innerHTML = `<div class="chat-msg ai">✅ Analysis loaded. Ask me about threats, MITRE mappings, remediation, or chain of custody.</div>`;
+    }
+
+    function sendChat() {
+      const inp = document.getElementById('chat-input');
+      const msg = inp.value.trim(); if (!msg) return;
+      const m = document.getElementById('chat-msgs');
+      m.innerHTML += `<div class="chat-msg user">${msg}</div>`;
+      inp.value = ''; m.scrollTop = m.scrollHeight;
+      if (ws && ws.readyState === WebSocket.OPEN) { ws.send(JSON.stringify({ action: 'chat', message: msg })); document.getElementById('chat-send').disabled = true; }
+      else m.innerHTML += `<div class="chat-msg ai" style="color:var(--red)">⚠ Backend offline.</div>`;
+    }
+
+    async function exportReport(fmt) {
+      try {
+        const apiBase = BACKEND_URL || ''; const r = await fetch(`${apiBase}/api/export/${fmt}?serial=${encodeURIComponent(currentSerial || '')}`);
+        if (!r.ok) { addLog('warn', '[EXP]', `Export failed: ${r.status}`); return; }
+        const blob = await r.blob(), url = URL.createObjectURL(blob), a = document.createElement('a');
+        a.href = url; a.download = `cybersentinel_${currentSerial}_${Date.now()}.${fmt}`; a.click(); URL.revokeObjectURL(url);
+        addLog('ok', '[EXP]', `Report exported as .${fmt}`);
+      } catch (e) { addLog('warn', '[EXP]', 'Export unavailable (backend offline or no scan yet).'); }
+    }
+
+
+
+    // ── UI Helpers ─────────────────────────────────────────────────────────────
+    function nowStr() { return new Date().toLocaleTimeString('en-IN', { hour12: false }); }
+
+    function addLog(type, tag, msg, threat, ok) {
+      const t = document.getElementById('terminal');
+      const d = document.createElement('div'); d.className = 'log-line';
+      d.innerHTML = `<span class="lt">${nowStr()}</span><span class="lg ${type}">${tag}</span><span class="lm ${threat ? 'threat-msg' : ok ? 'ok-msg' : ''}">${msg}</span>`;
+      t.appendChild(d); t.scrollTop = t.scrollHeight;
+    }
+
+    function setMetric(id, val, color, sub) {
+      const mv = document.getElementById('mv-' + id);
+      const ms = document.getElementById('ms-' + id);
+      const mc = document.getElementById('m-' + id);
+      mv.textContent = val; mv.className = 'mc-val ' + (color || '');
+      if (sub !== undefined) ms.textContent = sub;
+      mc.className = 'mc ' + (color === 'red' ? 'red-a' : color === 'green' ? 'green-a' : color === 'amber' ? 'amber-a' : '');
+    }
+
+    function setDeviceCard(d) {
+      const badge = document.getElementById('dev-status-badge');
+      badge.textContent = d.risk || d.fw || 'Connected';
+      badge.style.color = (d.risk === 'CRITICAL' || d.risk === 'HIGH') ? 'var(--red)' : d.risk === 'CLEAN' ? 'var(--green)' : 'var(--amber)';
+      const fwC = d.fw === 'TAMPERED' ? 'red' : 'green';
+      const rC = (d.risk === 'CRITICAL' || d.risk === 'HIGH') ? 'red' : d.risk === 'CLEAN' ? 'green' : 'amber';
+      document.getElementById('device-body').innerHTML = `
+    <div class="d-row"><span class="d-key">Model</span><span class="d-val">${d.model || '?'}</span></div>
+    <div class="d-row"><span class="d-key">OS</span><span class="d-val">${d.os || d.android_version || '?'}</span></div>
+    <div class="d-row"><span class="d-key">Serial</span><span class="d-val" style="font-size:10px">${d.serial || d.device_serial || '?'}</span></div>
+    <div class="d-row"><span class="d-key">IMEI</span><span class="d-val" style="font-size:10px">${d.imei || 'N/A'}</span></div>
+    <div class="d-row"><span class="d-key">Connection</span><span class="d-val">${d.conn || d.connection || 'USB'}</span></div>
+    <div class="d-row"><span class="d-key">Battery</span><span class="d-val">${d.battery || 'N/A'}</span></div>
+    <div class="d-row"><span class="d-key">CPU</span><span class="d-val">${d.cpu || d.cpu_arch || '?'}</span></div>
+    <div class="d-row"><span class="d-key">Firmware</span><span class="d-val ${fwC}">${d.fw || '?'}</span></div>
+    <div class="d-row"><span class="d-key">Risk Level</span><span class="d-val ${rC}">${d.risk || 'UNKNOWN'}</span></div>`;
+    }
+
+    function showFindings(findings) {
+      const sec = document.getElementById('findings-section'), body = document.getElementById('findings-body');
+      sec.style.display = 'block';
+      if (!findings || !findings.length) { body.innerHTML = '<div style="text-align:center;padding:24px;color:var(--green);font-family:var(--mono);font-size:14px;font-weight:700">✅ No threats detected. Device cleared for forensic analysis.</div>'; return; }
+      body.innerHTML = findings.map(f => {
+        const cls = f.cls || (f.severity === 'critical' ? 'crit' : f.severity === 'medium' ? 'med' : f.severity || 'high');
+        const badge = (f.badge || (f.severity || 'HIGH')).toUpperCase();
+        const icon = f.ic || `<i class="ti ti-shield-alert"></i>`;
+        const desc = f.desc || f.description || '';
+        const sig = f.signature ? `<span>${f.signature}</span>` : '';
+        const mitre = f.mitre_id ? `<span>MITRE ${f.mitre_id}</span>` : '';
+        return `<div class="finding ${cls}"><div class="finding-ic">${icon}</div><div style="flex:1"><div class="finding-title"><span class="fbadge ${cls}">${badge}</span>${f.title}</div><div class="finding-desc">${desc}</div><div class="finding-meta">${sig}${mitre}</div></div></div>`;
+      }).join('');
+    }
+
+    function showAlertBar(type, msg) {
+      const b = document.getElementById('scanner-alert');
+      b.className = 'alert-bar ' + type;
+      b.innerHTML = (type === 'danger' ? '🚨 ' : '✅ ') + msg;
+      b.style.display = 'flex';
+    }
+
+    function resetScan() {
+      scanTimers.forEach(t => { clearTimeout(t); clearInterval(t); }); scanTimers = [];
+      scanState = 'idle';
+      const zone = document.getElementById('connect-zone');
+      zone.className = 'cz';
+      document.getElementById('usb-icon').textContent = '🔌';
+      document.getElementById('zone-title').textContent = 'Connect Evidence Device';
+      document.getElementById('zone-sub').textContent = 'Connect a real Android device via USB · Enable USB Debugging in Developer Options';
+      document.getElementById('scan-phase').textContent = '';
+      document.getElementById('prog-wrap').style.display = 'none';
+      const pf = document.getElementById('prog-fill'); pf.style.width = '0%'; pf.className = 'prog-fill scanning';
+      const btn = document.getElementById('main-btn');
+      btn.style.display = 'inline-flex'; btn.className = 'btn btn-red';
+      btn.innerHTML = '<i class="ti ti-plug-connected"></i> Connect &amp; Scan';
+      btn.onclick = e => { e.stopPropagation(); startScan(); };
+      document.getElementById('scanner-alert').style.display = 'none';
+      ['files', 'threats', 'risk', 'time'].forEach(id => {
+        setMetric(id, '—', '', 'awaiting device');
+        document.getElementById('m-' + id).className = 'mc';
+        document.getElementById('mv-' + id).className = 'mc-val';
+      });
+      document.getElementById('ms-risk').textContent = 'out of 100';
+      document.getElementById('ms-time').textContent = 'seconds elapsed';
+      const badge = document.getElementById('dev-status-badge');
+      badge.textContent = 'No device'; badge.style.color = '';
+      document.getElementById('device-body').innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--muted);font-family:var(--mono);font-size:12px">No device connected</div>';
+      document.getElementById('findings-section').style.display = 'none';
+      document.getElementById('ai-panel').style.display = 'none';
+      document.getElementById('chat-panel').style.display = 'none';
+      lastScanData = null;
+      document.getElementById('terminal').innerHTML = '';
+      addLog('info', '[SYS]', 'CyberSentinel v3 reset. Connect a real device to begin scanning...');
+    }
+  </script>
+</body>
+
+</html>
