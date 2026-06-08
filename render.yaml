@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: cybersentinel-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: LOG_LEVEL
+        value: INFO
+      - key: SCAN_TIMEOUT
+        value: "60"
+      - key: ENABLE_HEURISTICS
+        value: "true"
+      - key: GROQ_API_KEY
+        sync: false          # Set this manually in Render dashboard
+      - key: CORS_ORIGINS
+        sync: false          # Set to your Vercel URL after deploying frontend
+      # - key: VIRUSTOTAL_API_KEY
+      #   sync: false        # Optional — uncomment if you have a VT key
